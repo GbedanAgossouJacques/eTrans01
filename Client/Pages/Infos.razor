@@ -1,0 +1,30 @@
+﻿@page "/client/{id}"
+@inject IClientService ClientService
+
+<div class="media">
+    <div class="media-img-big-wrapper mr-2">
+            <img class="media-img-big" src="@user.Image" alt="aaaaaaaaaaaa" style="width:50%;height:50%;" />
+    </div>
+    <div class="media-body">
+            <h2 class="mb-0">@user.Nom</h2>
+        <p>@user.Description</p>
+        <h5> @user.NumeroDeTelephone</h5> 
+    </div>
+</div>
+
+@code {
+    private CLient user = null;
+
+    [Parameter]
+    public string Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ClientService.Clients == null || ClientService.Clients.Count == 0)
+        {
+            await ClientService.LoadClients();
+        }
+
+        user = ClientService.Clients.FirstOrDefault(u => u.Id == Int32.Parse(Id));
+    }
+}

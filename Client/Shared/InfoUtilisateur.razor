@@ -1,0 +1,29 @@
+﻿@inject IClientService ClientService
+
+<ul class="list-unstyled">
+    @foreach (var user in ClientService.Clients)
+    {
+        <li class="media my-3">
+            <div class="media-img-wrapper mr-2">
+                <a href="/client/@user.Id" >
+                    <img class="media-img" src="@user.Image" alt="aaaaaaaaaaaa" />
+                </a>
+            </div>
+            <div class="media-body">
+                <a href="/client/@user.Id">
+                    <h4 class="mb-0">@user.Nom</h4>
+                </a>
+                <p>@user.Description</p>
+                <h5> @user.NumeroDeTelephone</h5>
+            </div>
+        </li>
+    }
+</ul>
+ 
+
+@code {      
+    protected override async Task OnInitializedAsync()
+    {
+        await ClientService.LoadClients();
+    }
+}

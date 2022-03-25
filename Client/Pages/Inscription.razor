@@ -1,0 +1,103 @@
+﻿@page "/inscription"
+@using Microsoft.Extensions.Logging
+@inject ILogger<Utilisateur> Logger
+
+<EditForm EditContext="@editContext" OnSubmit="@HandleSubmit">
+    <DataAnnotationsValidator />
+    <p>
+        <label>
+            Nom:
+            <InputText @bind-Value="user.Nom" ParsingErrorMessage="{0} est incorrecte." />
+        </label>
+        <ValidationMessage For="@(() => user.Nom)" />
+    </p>
+    <p>
+        <label>
+            Prénoms:
+            <InputText @bind-Value="user.Prenoms" ParsingErrorMessage="{0} est incorrecte." />
+        </label>
+        <ValidationMessage For="@(() => user.Prenoms)" />
+    </p>
+    <p>
+        <label>
+            Numero de telephone:
+            <InputText @bind-Value="user.NumeroDeTelephone" ParsingErrorMessage="{0} est incorrecte." />
+        </label>
+        <ValidationMessage For="@(() => user.NumeroDeTelephone)" />
+    </p>
+    <p>
+        <label>
+            Sex:
+            <InputSelect @bind-Value="user.Sex" DisplayName="Sexe" ParsingErrorMessage="Veuillez entrez votre genre{0}.">
+                <option value="">Select classification ...</option>
+                <option value="Masculin">Masculin</option>
+                <option value="Féminin">Féminin</option>
+            </InputSelect>
+        </label>
+        <ValidationMessage For="@(() => user.Sex)" />
+    </p>
+    <p>
+        <label>
+            Type de compte :
+            <InputSelect @bind-Value="user.TypeCompte" DisplayName="Type de compte" ParsingErrorMessage="{0} est incorrecte.">
+                <option value="">Select classification ...</option>
+                <option value="@Utilisateur.Typecompte.chauffeur">Chauffeur</option>
+                <option value="@Utilisateur.Typecompte.Client">Client</option>
+            </InputSelect>
+        </label>
+        <ValidationMessage For="@(() => user.TypeCompte)" />
+    </p>
+    <p>
+        <label>
+            Date de naissance:
+            <InputDate @bind-Value="user.DateDeNaissance" DisplayName="Date de naissance"
+                       ParsingErrorMessage="La {0} doit etre une date correcte." />
+        </label>
+        <ValidationMessage For="@(() => user.DateDeNaissance)" />
+    </p>
+
+    <button type="submit">Submit</button>
+
+</EditForm>
+
+@code {
+    private Utilisateur user = new();
+
+    private EditContext? editContext;
+    private ValidationMessageStore? messageStore;
+
+    protected override void OnInitialized()
+    {
+        editContext = new(user);
+        editContext.OnValidationRequested += HandleValidationRequested;
+        messageStore = new(editContext);
+    }
+
+    private void HandleValidationRequested(object? sender,
+        ValidationRequestedEventArgs args)
+    {
+        messageStore?.Clear();
+
+        // Custom validation logic
+        if (user is not null)
+        {
+            messageStore?.Add(() => user.Nom, "Select at least one.");
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (editContext != null && editContext.Validate())
+        {
+            Logger.LogInformation("HandleSubmit called: le formulaire est valide");
+
+            // Process the valid form
+            // await ...
+            await Task.CompletedTask;
+        }
+        else
+        {
+            Logger.LogInformation("HandleSubmit called: le formulaire n'est pas valide");
+        }
+    }
+}

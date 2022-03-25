@@ -1,0 +1,45 @@
+﻿@page "/historique"
+@inject HttpClient Http
+@inject ITransportService TransportService
+
+<h1>Historique des transports</h1>
+
+
+
+@if (TransportService.Transports == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Identifiant</th>
+                <th>Date de commande</th>
+                <th>Distance</th>
+                <th>Prix</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var transport in TransportService.Transports)
+            {
+                <tr>
+                    <td>@transport.Id</td>
+                    <td>@transport.Datecommande</td>
+                    <td>@transport.Distance</td>
+                    <td>@transport.Prix</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await TransportService.LoadTransports();
+    }
+
+}
